@@ -7,7 +7,7 @@ This will crop images around dog faces. e.g.
 | ![intput 1](https://spudtrooper.github.io/dogfacedetect/input/1.jpg) | ![output 1](https://spudtrooper.github.io/dogfacedetect/output/1.jpg) |
 | ![intput 1](https://spudtrooper.github.io/dogfacedetect/input/2.jpg) | ![output 2](https://spudtrooper.github.io/dogfacedetect/output/2.jpg) |
 | ![intput 1](https://spudtrooper.github.io/dogfacedetect/input/3.jpg) | ![output 3](https://spudtrooper.github.io/dogfacedetect/output/3.jpg) |
-| ![intput 1](https://spudtrooper.github.io/dogfacedetect/input/4.jpg) | ![output 4](https://spudtrooper.github.io/dogfacedetect/output/4.png) |
+| ![intput 1](https://spudtrooper.github.io/dogfacedetect/input/4.png) | ![output 4](https://spudtrooper.github.io/dogfacedetect/output/4.png) |
 
 Initially used to create the source images for https://spudtrooper.github.io/photocollage-java/stella-head-200w25xh25-out.png.
 
