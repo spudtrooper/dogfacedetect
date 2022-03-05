@@ -19,7 +19,9 @@ def DetectFace(img_path, output_dir, dog_face_detector_dir):
         dog_face_detector_dir, 'dogHeadDetector.dat')
     if not os.path.exists(cnn_face_detection_model_v1_file):
         raise Exception(
-            'dogHeadDetector.dat does not exist, please make sure this file is in --dog_face_detector_dir')
+            'dogHeadDetector.dat does not exist, please make sure this file is in --dog_face_detector_dir. '
+            'This is expected to be the cloned directory of https://github.com/kairess/dog_face_detector. '
+            'See the README.md for more')
     detector = dlib.cnn_face_detection_model_v1(
         cnn_face_detection_model_v1_file)
 
@@ -73,12 +75,12 @@ class FaceDetectWorker(Thread):
 
     def run(self):
         while True:
-            img_path = self.queue.get()
+            f = self.queue.get()
             n, d = self.c.Inc(), self.n
             logging.info('[%d / %d (%0.2f%%)] processing %s' %
                          (n, d, 100*n/d, f))
             try:
-                DetectFace(img_path, self.output_dir,
+                DetectFace(f, self.output_dir,
                            self.dog_face_detector_dir)
             except Exception as e:
                 logging.error('error for %s: %s' % (f, e))
