@@ -1,7 +1,7 @@
 import sys
 from PIL import Image
-from imutils import face_utils
-import numpy as np
+# from imutils import face_utils
+# import numpy as np
 import dlib
 import cv2
 from threading import Thread
@@ -12,11 +12,11 @@ import logging
 import argparse
 import sys
 
-
 SCALE_FACTOR = 0.2
 
-
 # https://github.com/kairess/dog_face_detector/blob/master/video.py
+
+
 def DetectFace(img_path, output_dir, dog_face_detector_dir):
     cnn_face_detection_model_v1_file = os.path.join(
         dog_face_detector_dir, 'dogHeadDetector.dat')
@@ -78,7 +78,8 @@ class FaceDetectWorker(Thread):
         while True:
             img_path = self.queue.get()
             n, d = self.c.Inc(), self.n
-            logging.info('[%d / %d (%0.2f%%)] %s' % (n, d, 100*n/d, f))
+            logging.info('[%d / %d (%0.2f%%)] processing %s' %
+                         (n, d, 100*n/d, f))
             try:
                 DetectFace(img_path, self.output_dir,
                            self.dog_face_detector_dir)
@@ -94,6 +95,7 @@ def MultiThreadedDetect(files, output_dir, dog_face_detector_dir):
     for x in range(50):
         worker = FaceDetectWorker(queue, c, len(
             files), output_dir, dog_face_detector_dir)
+        worker.daemon = True
         worker.start()
     # https://www.tutorialspoint.com/python/os_listdir.htm
     for f in files:
@@ -104,9 +106,8 @@ def MultiThreadedDetect(files, output_dir, dog_face_detector_dir):
 def SyncDetect(files, output_dir, dog_face_detector_dir):
     # https://www.tutorialspoint.com/python/os_listdir.htm
     for i, f in enumerate(files):
-        logging.info('[{} / {}] {}'.format(i+1, len(files), f))
         n, d = i+1, len(files)
-        logging.info('[%d / %d (%0.2f%%)] %s' % (n, d, 100*n/d, f))
+        logging.info('processing [%d / %d (%0.2f%%)] %s' % (n, d, 100*n/d, f))
 
         try:
             DetectFace(f, output_dir, dog_face_detector_dir)
