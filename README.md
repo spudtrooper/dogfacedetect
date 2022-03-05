@@ -32,7 +32,7 @@ $ scripts/run.sh --dog_face_detector_dir /Users/bob/projects/dog_face_detector -
 
 ## For Jeff
 
-Fix the python path before running
+Fix the python path before running (probably figure how to do this correctly)
 
 ```
 export PYTHONPATH=/opt/homebrew/lib/python3.9/site-packages
