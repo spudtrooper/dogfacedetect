@@ -78,10 +78,10 @@ class FaceDetectWorker(Thread):
                 self.queue.task_done()
 
 
-def MultiThreadedDetect(files, output_dir):
+def MultiThreadedDetect(files, output_dir, threads):
     queue = Queue()
     c = Counter()
-    for x in range(50):
+    for _ in range(threads):
         worker = FaceDetectWorker(queue, c, len(files), output_dir)
         worker.daemon = True
         worker.start()
@@ -115,6 +115,7 @@ def Keep(f):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--verbose', '-v', action='count', default=1)
+    parser.add_argument('--threads', '-t', action='store', type=int, default=50)
     parser.add_argument('--multithreaded', '-m', action='store', type=bool)
     parser.add_argument('--input_dir', '-i', action='store',
                         type=str, required=True)
@@ -133,6 +134,6 @@ if __name__ == '__main__':
             logging.error('%s does not exist, skipping' % f)
     allfiles = [f for f in allfiles if os.path.exists(f)]
     if args.multithreaded:
-        MultiThreadedDetect(allfiles, args.output_dir)
+        MultiThreadedDetect(allfiles, args.output_dir, args.threads)
     else:
         SyncDetect(allfiles, args.output_dir)
