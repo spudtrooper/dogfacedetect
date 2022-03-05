@@ -31,5 +31,4 @@ args=(
   file-that-does-not-exist
   testdata/explicit/4.png
 )
-
 $scripts/run.sh "${args[@]}"  "$@"
