@@ -1,7 +1,5 @@
 import sys
 from PIL import Image
-# from imutils import face_utils
-# import numpy as np
 import dlib
 import cv2
 from threading import Thread
