@@ -14,10 +14,9 @@ import sys
 
 SCALE_FACTOR = 0.2
 
-# https://github.com/kairess/dog_face_detector/blob/master/video.py
-
 
 def DetectFace(img_path, output_dir, dog_face_detector_dir):
+    # https://github.com/kairess/dog_face_detector/blob/master/video.py
     cnn_face_detection_model_v1_file = os.path.join(
         dog_face_detector_dir, 'dogHeadDetector.dat')
     if not os.path.exists(cnn_face_detection_model_v1_file):
