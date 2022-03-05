@@ -13,14 +13,6 @@ Initially used to create the source images for https://spudtrooper.github.io/pho
 
 ## Usage
 
-Clone [https://github.com/kairess/dog_face_detector](https://github.com/kairess/dog_face_detector) 
-and set the `--dog_face_detector_dir` to the directory to which it's cloned. e.g.
-
-```
-cd /Users/bob/projects
-git clone https://github.com/kairess/dog_face_detector
-```
-
 Run with `scripts/run.sh` specifying the files to crop with:
 
 * the flag `--input_dir` - crop all image files under this directory
@@ -31,6 +23,10 @@ e.g. for directory `image-files` and two images `one.jpg`, `two.jpeg`.
 ```
 $ scripts/run.sh --dog_face_detector_dir /Users/bob/projects/dog_face_detector --input_dir image-files one.jpg two.jpeg
 ```
+
+## Thanks
+
+The model comes from https://github.com/kairess/dog_face_detector.
 
 ## For Jeff
 

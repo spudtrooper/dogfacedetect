@@ -11,20 +11,12 @@ import argparse
 import sys
 
 SCALE_FACTOR = 0.2
+CNN_FACE_DETECTION_MODEL_V1 = 'model/dogHeadDetector.dat'
 
 
-def DetectFace(img_path, output_dir, dog_face_detector_dir):
+def DetectFace(img_path, output_dir):
     # https://github.com/kairess/dog_face_detector/blob/master/video.py
-    cnn_face_detection_model_v1_file = os.path.join(
-        dog_face_detector_dir, 'dogHeadDetector.dat')
-    if not os.path.exists(cnn_face_detection_model_v1_file):
-        raise Exception(
-            'dogHeadDetector.dat does not exist, please make sure this file is in --dog_face_detector_dir. '
-            'This is expected to be the cloned directory of https://github.com/kairess/dog_face_detector. '
-            'See the README.md for more')
-    detector = dlib.cnn_face_detection_model_v1(
-        cnn_face_detection_model_v1_file)
-
+    detector = dlib.cnn_face_detection_model_v1(CNN_FACE_DETECTION_MODEL_V1)
     img_save_path = os.path.join(output_dir, os.path.basename(img_path))
     if os.path.exists(img_save_path):
         logging.info('skipping {}'.format(img_save_path))
@@ -65,13 +57,12 @@ class Counter(object):
 class FaceDetectWorker(Thread):
     # https://www.toptal.com/python/beginners-guide-to-concurrency-and-parallelism-in-python
 
-    def __init__(self, queue, c, n, output_dir, dog_face_detector_dir):
+    def __init__(self, queue, c, n, output_dir):
         Thread.__init__(self)
         self.queue = queue
         self.c = c
         self.n = n
         self.output_dir = output_dir
-        self.dog_face_detector_dir = dog_face_detector_dir
 
     def run(self):
         while True:
@@ -80,20 +71,18 @@ class FaceDetectWorker(Thread):
             logging.info('[%d / %d (%0.2f%%)] processing %s' %
                          (n, d, 100*n/d, f))
             try:
-                DetectFace(f, self.output_dir,
-                           self.dog_face_detector_dir)
+                DetectFace(f, self.output_dir)
             except Exception as e:
                 logging.error('error for %s: %s' % (f, e))
             finally:
                 self.queue.task_done()
 
 
-def MultiThreadedDetect(files, output_dir, dog_face_detector_dir):
+def MultiThreadedDetect(files, output_dir):
     queue = Queue()
     c = Counter()
     for x in range(50):
-        worker = FaceDetectWorker(queue, c, len(
-            files), output_dir, dog_face_detector_dir)
+        worker = FaceDetectWorker(queue, c, len(files), output_dir)
         worker.daemon = True
         worker.start()
     # https://www.tutorialspoint.com/python/os_listdir.htm
@@ -102,14 +91,14 @@ def MultiThreadedDetect(files, output_dir, dog_face_detector_dir):
     queue.join()
 
 
-def SyncDetect(files, output_dir, dog_face_detector_dir):
+def SyncDetect(files, output_dir):
     # https://www.tutorialspoint.com/python/os_listdir.htm
     for i, f in enumerate(files):
         n, d = i+1, len(files)
         logging.info('processing [%d / %d (%0.2f%%)] %s' % (n, d, 100*n/d, f))
 
         try:
-            DetectFace(f, output_dir, dog_face_detector_dir)
+            DetectFace(f, output_dir)
         except Exception as e:
             logging.error('error for {}: {}'.format(f, e))
 
@@ -131,8 +120,6 @@ if __name__ == '__main__':
                         type=str, required=True)
     parser.add_argument('--output_dir', '-o', action='store',
                         default='cropped', type=str)
-    parser.add_argument('--dog_face_detector_dir', '-d',
-                        default='../dog_face_detector', action='store', type=str)
     args, files = parser.parse_known_args()
     # https://gist.github.com/ms5/9f6df9c42a5f5435be0e
     args.verbose = 70 - (10*args.verbose) if args.verbose > 0 else 0
@@ -146,7 +133,6 @@ if __name__ == '__main__':
             logging.error('{} does not exist, skipping'.format(f))
     allfiles = [f for f in allfiles if os.path.exists(f)]
     if args.multithreaded:
-        MultiThreadedDetect(allfiles, args.output_dir,
-                            args.dog_face_detector_dir)
+        MultiThreadedDetect(allfiles, args.output_dir)
     else:
-        SyncDetect(allfiles, args.output_dir, args.dog_face_detector_dir)
+        SyncDetect(allfiles, args.output_dir)
