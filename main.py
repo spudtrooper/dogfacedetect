@@ -19,7 +19,7 @@ def DetectFace(img_path, output_dir):
     detector = dlib.cnn_face_detection_model_v1(CNN_FACE_DETECTION_MODEL_V1)
     img_save_path = os.path.join(output_dir, os.path.basename(img_path))
     if os.path.exists(img_save_path):
-        logging.info('skipping {}'.format(img_save_path))
+        logging.info('skipping %s' % img_save_path)
         return
 
     img = cv2.imread(img_path)
@@ -100,7 +100,7 @@ def SyncDetect(files, output_dir):
         try:
             DetectFace(f, output_dir)
         except Exception as e:
-            logging.error('error for {}: {}'.format(f, e))
+            logging.error('error for %s: %s' % (f,e))
 
 
 def Keep(f):
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     allfiles.extend(files)
     for f in allfiles:
         if not os.path.exists(f):
-            logging.error('{} does not exist, skipping'.format(f))
+            logging.error('%s does not exist, skipping' % f)
     allfiles = [f for f in allfiles if os.path.exists(f)]
     if args.multithreaded:
         MultiThreadedDetect(allfiles, args.output_dir)
